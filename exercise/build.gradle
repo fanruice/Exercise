@@ -1,0 +1,41 @@
+buildscript {
+	ext {
+		springBootVersion = '2.1.0.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.fanruice'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	implementation('org.springframework.boot:spring-boot-starter')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	compile 'org.springframework.boot:spring-boot-starter-web:2.2.2.RELEASE'
+	compile 'org.springframework.boot:spring-boot-starter-tomcat:2.2.2.RELEASE'
+
+	compile fileTree(dir:'lib',includes:['*jar'])
+	//引入CGlib
+	compile 'cglib:cglib:2.2.2'
+	// JSON
+	//compile 'com.alibaba:fastjson:1.2.58'
+	//compile 'net.sf.ezmorph:ezmorph:1.0.6'
+    //compile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4'
+
+}
