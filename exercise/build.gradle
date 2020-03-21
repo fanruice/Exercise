@@ -34,7 +34,7 @@ dependencies {
 	//引入CGlib
 	compile 'cglib:cglib:2.2.2'
 	// JSON
-	//compile 'com.alibaba:fastjson:1.2.58'
+	compile 'com.alibaba:fastjson:1.2.58'
 	//compile 'net.sf.ezmorph:ezmorph:1.0.6'
     //compile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4'
 
