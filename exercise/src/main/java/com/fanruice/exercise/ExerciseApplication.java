@@ -9,6 +9,7 @@ public class ExerciseApplication {
 	public static void main(String[] args) {
 		try {
 			SpringApplication.run(ExerciseApplication.class, args);
+			System.out.println("启动成功！");
 		} catch (Exception e) {
 			System.out.println("启动异常：" + e);
 		}
