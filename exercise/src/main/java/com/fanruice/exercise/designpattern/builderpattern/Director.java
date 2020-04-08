@@ -17,4 +17,11 @@ public class Director {
         builder.bulidTire();
         return builder.createBike();
     }
+
+    public Bike construct1() {
+        builder.bulidSeat();
+        builder.bulidFrame();
+        builder.bulidTire();
+        return builder.createBike();
+    }
 }
