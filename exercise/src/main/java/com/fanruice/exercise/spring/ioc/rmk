@@ -1,0 +1,72 @@
+spring  IoC
+
+依赖来源：1、自定义Bean
+        2、容器内建Bean
+        3、容器内建依赖（BeanFactory）。
+
+配置元信息：
+    1、Bean定义配置：
+        ①、基于XML文件
+        ②、基于Properties文件
+        ③、基于Java注解
+        ④、基于Java API
+    2、IoC容器配置：
+        ①、基于XML文件
+        ②、基于Java注解
+        ③、基于Java API
+    3、内部化属性配置：
+        ①、基于Java注解。
+
+
+抛出问题 ： BeanFactory 和  ApplicationContext ，到底谁才是真正的IoC容器？
+
+BeanFactory是一个底层的IoC容器，ApplicationContext是在这个的基础上增加了一些特性
+
+----------------------------------------------------------------------------------------
+问题：System.out.println(userRepositoryAuto.getBeanFactory() == beanFactory);  为什么会返回  false
+
+答：
+    ClassPathXmlApplicationContext <- ConfigurableApplicationContext <- ApplicationContext <- BeanFactory
+    BeanFactory beanFactory = new ClassPathXmlApplicationContext("META-INF/dependency-injection-context.xml");
+    真正用到的BeanFactory 是ConfigurableApplicationContext#getBeanFactory（）方法所得到的的BeanFactory
+    最根源 取的是   AbstractRefreshableApplicationContext 的 一个 DefaultListableBeanFactory类型的属性 beanFactory
+    也就是说  虽然 ClassPathXmlApplicationContext 是 BeanFactory的一个子接口，但是new 出来的那个BeanFactory并不是他的父接口，
+    而是AbstractRefreshableApplicationContext 的 一个 DefaultListableBeanFactory类型的属性beanFactory（利用的组合的方式）
+
+    当然这里getBean 的时候也是从 上面那个属性 beanFactory 中 getBean
+----------------------------------------------------------------------------------------
+
+注意：  当我们得到 ApplicationContext 的时候，千万要去调用它的getBeanFactory() 方法，去获取真正的底层的实现，而非直接因为他们是继承
+的关系就直接进行替换。
+
+----------------------------------------------------------------------------------------
+官方文档中对于 BeanFactory 和 ApplicationContext 的解释：
+
+The org.springframework.beans and org.springframework.context packages are the basis
+for Spring Framework’s IoC container. The BeanFactory interface provides an advanced
+configuration mechanism capable of managing any type of object.
+ApplicationContextis a sub-interface of BeanFactory. It adds:
+
+    Easier integration with Spring’s AOP features
+
+    Message resource handling (for use in internationalization)
+
+    Event publication
+
+    Application-layer specific contexts such as the WebApplicationContext for use in web applications.
+
+In short, the BeanFactory provides the configuration framework and basic functionality,
+and the ApplicationContext adds more enterprise-specific functionality. The ApplicationContext
+is a complete superset of the BeanFactory and is used exclusively in this chapter in descriptions
+of Spring’s IoC container. For more information on using the BeanFactory instead of the ApplicationContext,
+see The BeanFactory.
+----------------------------------------------------------------------------------------
+
+ApplicationContext（Spring 应用上下文）除了IoC容器的角色外，还提供：
+    1、面向切面（AOP）
+    2、配置元信息（Configuration MetaData）
+    3、资源管理：（Resources）
+    4、事件（Events）
+    5、国际化（i18n）
+    6、注解（Annotations）
+    7、Environment抽象（Environment Abstraction）
