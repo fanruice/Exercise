@@ -1,0 +1,84 @@
+什么是 BeanDefinition？
+
+BeanDefinition 是 Spring Framework 中定义 Bean 的配置元信息接口，包括：
+    1、Bean 的类名
+    2、Bean 行为配置元素，如 作用域，自动绑定的模式，生命周期回调等。
+    3、其他 Bean 引用，又可称作合作者（Collaborators）或者依赖（dependencies）。
+    4、配置设置，比如 Bean 属性（Properties）。
+
+Bean的名称的定义：
+    1、每个 Bean 拥有一个或多个标识符（identifiers），这些标识符在 Bean 所在的容器里面必须是唯一的。通常，一个 Bean 只有
+        一个标识符，如果需要额外的，可考虑使用别名（Alias）来扩充。
+    2、基于 XML 的配置元信息中，开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成，允许出现
+        特殊字符。如果想要引入 Bean 的别名的话，可在 name 属性使用 "," 或者 ";" 来间隔。
+    3、Bean 的 id 或者 name 属性，并非必须制定，如果留空的话，容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有
+        限制，不过官方建议使用驼峰的方式，更符合 Java 的命名约定。
+
+Bean 的名称的生成：
+    Bean名称生成器（BeanNameGenerator），有 Spring FrameWork 2.0.3 引入。
+    框架内建两种实现：DefaultBeanNameGenerator，默认通用 BeanNameGenerator 实现；
+                    AnnotationBeanNameGenerator，基于注解扫描的 BeanNameGenerator 实现，起始于 Spring Framework 2.5。
+    (注解里面，一般是非命名的多一点，XML 的方式，命名的会多一点)。
+
+Bean 的别名的价值：
+    1、复用现有的BeanDefinition；
+    2、更具有场景化的命名方法。
+
+注册 Spring Bean 的方式：（BeanDefinition）（BeanDefinitionCreationDemo，AnnotationBeanDefinitionDemo）
+    1、XML 配置元信息
+    2、Java注解配置元信息：@Bean，@Component，@Import。
+    3、Java API 配置元信息
+        ①、命名方式：BeanDefinitionRegistry.registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
+        ②、非命名方式：BeanDefinitionReaderUtils.registerWithGeneratedName(AbstractBeanDefinition definition, BeanDefinitionRegistry registry).
+        ③、配置类方式：AnnotatedBeanDefinitionReader.register
+
+Spring Bean 的实例化方法（instantiation）（BeanInstantiationDemo，SpecialBeanInstantiationDemo）
+    1、常规方式：
+        ①、通过构造器（配置元信息：XML，Java注解 和 Java API）
+        ②、通过静态工厂方法（配置元信息：XML 和Java API）
+        ③、通过 Bean 工厂方法（配置元信息：XML 和 Java API）
+        ④、通过 FactoryBean（配置元信息：XML，Java 注解 和 Java API）
+    2、特殊方式
+        ①、通过 ServiceLoaderFactoryBean（配置元信息：XML，Java 注解 和 Java API）
+        ②、通过 AutowireCapableBeanFactory.createBean(java.lang.Class<T>)
+        ③、通过 BeanDefinitionRegistry.registerBeanDefinition
+
+Bean 的初始化（Initialization）（）
+    1、@PostConstruct 标注方法
+    2、实现 InitializingBean 接口的 afterPropertiesSet()方法
+    3、自定义初始化方法
+        ①、XML 配置：<bean init-method="" .../>
+        ②、Java注解 @Bean(initMethod="")
+        ③、Java API：AbstractBeanDefinition.setInitMethodName
+他们的执行顺序就是按照 1，2，3的执行顺序进行执行的
+
+Bean 延迟初始化（Lazy Initialization）：
+    1、XML 配置：<bean lazy-init="true" .../>
+    2、Java 注解：@Lazy（true）
+问题：延迟初始化与非延迟初始存在什么区别：
+答：延迟初始化是一种按需初始化，当被用到的时候才去初始化(肯定是在Spring应用上下文启动之后)；
+    非延迟初始化在 refresh 方法中就会被初始化。
+
+Bean 的销毁（Destroy）
+    1、@PreDestroy 标注方法
+    2、实现 DisposableBean 接口的destroy()方法
+    3、自定义销毁方法
+        ①、XML 配置：<bean destroy="" .../>
+        ②、Java 注解：@Bean(destroy="")
+        ③、Java API：AbstractBeanDefinition.setDestroyMethodName
+执行的时候  是在 applicationContext.close(); 方法被执行的。
+
+垃圾回收 Spring Bean（步骤）
+    1、关闭 Spring 容器（应用上下文）
+    2、执行 GC（不是必须的）
+    3、Spring Bean 覆盖的 finalize() 方法被调用。（不是必须的）
+
+面试题：
+1、如何注册一个 Spring Bean？
+答：通过 BeanDefinition 和 外部单体对象来注册。(SingletonBeanRegistrationDemo)
+
+2、什么是 Spring BeanDefinition？
+
+
+3、Spring 容器是怎样管理诸注册 Bean？
+答：将在后续的章节进行详细讨论。如：IoC配置元信息读取和解析，依赖查找和注入以及Bean生命周期等。

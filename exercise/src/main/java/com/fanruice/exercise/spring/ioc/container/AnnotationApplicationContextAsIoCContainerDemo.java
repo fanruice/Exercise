@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * 有注解能力的 ApplicationContext 作为 IoC容器示例
  */
-public class ApplicationContextAsIoCContainerDemo {
+public class AnnotationApplicationContextAsIoCContainerDemo {
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         //将当前类作为配置类
-        applicationContext.register(ApplicationContextAsIoCContainerDemo.class);
+        applicationContext.register(AnnotationApplicationContextAsIoCContainerDemo.class);
 
         applicationContext.refresh();
         lookUpCollectionByType(applicationContext);
