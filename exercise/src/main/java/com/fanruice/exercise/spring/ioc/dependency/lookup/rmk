@@ -3,3 +3,68 @@
     2、根据Bean类型查找：单个Bean对现货；集合Bean对象。
     3、根据Bean名称+类型进行查找。
     4、根据Java注解查找：单个Bean对象；集合Bean对象。
+
+单一类型的依赖查找：
+    接口 - BeanFactory
+        1、根据 Bean 名称查找
+            ①、getBean(String)
+            ②、Spring 2.5 覆盖默认参数：getBean(String, Object...)
+        2、根据 Bean 类型查找
+            ①、Bean 实时查找
+                Spring 3.0 getBean(Class)
+                Spring 4.1 覆盖默认参数：getBean(Class, Object...)
+            ②、Spring 5.1 Bean 延迟查找
+                getBeanProvider(Class)
+                getBeanProvider(Resolvble type)
+        3、根据 Bean 名称+类型查找：getBean(String, Class);
+
+集合类型的依赖查找（ListableBeanFactory）：
+    1、根据 Bean 类型查找
+        ①、获取同类型 Bean 名称列表
+            ListableBeanFactory.getBeanNamesForType(java.lang.Class<?>)
+            ListableBeanFactory.getBeanNamesForType(org.springframework.core.ResolvableType)
+        ②、获取同类型 Bean 实例列表
+            ListableBeanFactory.getBeansOfType(java.lang.Class<T>)
+    2、通过注解类型查找
+        ①、Spring 3.0 获取标注类型 Bean名称列表
+            ListableBeanFactory.getBeanNamesForAnnotation
+         ②、Spring 3.0 获取标注类型 Bean 实例列表
+            ListableBeanFactory.getBeansWithAnnotation
+        ③、Spring 3.0 获取指定名称 + 标注类型 Bean 实例
+            ListableBeanFactory.findAnnotationOnBean
+
+在 Spring 里面，Bean 的定义默认是可以覆盖的。
+
+推荐使用 Bean 的名称去判断这个 Bean 是否存在，重要的方式是判断 BeanDefinition 是否存在，这种方式会避免提早
+初始化你的 Bean，产生一些不确定的因素。
+
+层次性依赖查找（接口：HierarchicalBeanFactory）
+    1、双亲 BeanFactory：HierarchicalBeanFactory.getParentBeanFactory
+    2、层次性查找
+        ①、根据 Bean 名称查找：基于 HierarchicalBeanFactory.containsLocalBean 实现
+        ②、根据 Bean 类型查找实例列表
+            单一类型：BeanFactoryUtils.beanOfType(ListableBeanFactory, java.lang.Class<T>)
+            集合类型：BeanFactoryUtils.beanOfTypeIncludingAncestors(ListableBeanFactory, java.lang.Class<T>, boolean, boolean)
+        ③、根据 Java 注解查找名称列表
+            BeanFactoryUtils.beanNamesForTypeIncludingAncestors(ListableBeanFactory, ResolvableType)
+
+延迟依赖查找：
+    1、org.springframework.beans.factory.ObjectFactory
+    2、org.springframework.beans.factory.ObjectProvider
+        Spring 5 对 Java 8 特性扩展
+            函数式接口：ObjectProvider.getIfAvailable()
+                      ObjectProvider.ifAvailable
+            Stream 扩展 - ObjectProvider.stream
+
+依赖查找的各种实现方式的安全性比较：（见：安全依赖查找图片）。建议使用 ObjectProvider 的实现来进行依赖查找。
+
+依赖查找的过程中会抛出的经典的异常：（见图片：依赖查找过程中会出现的经典异常.png）
+
+面试题：
+1、ObjectFactory 和 BeanFactory的区别？
+答：ObjectFactory 和 BeanFactory 均提供依赖查找的能力。不过，ObjectFactory 仅关注一个或一种类型的
+        bean 依赖查找，并且自身不具备依赖查找的能力，能力则由 BeanFactory 输出。
+    BeanFactory 则提供了单一类型，集合类型以及层次性等多种依赖查找的方式。
+2、BeanFactory.getBean 操作是否是线程安全的。
+答：是的。
+3、spring 的依赖查找和依赖注入 在来源上有什么区别？

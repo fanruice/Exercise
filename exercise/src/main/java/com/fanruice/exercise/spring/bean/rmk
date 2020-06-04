@@ -82,3 +82,11 @@ Bean 的销毁（Destroy）
 
 3、Spring 容器是怎样管理诸注册 Bean？
 答：将在后续的章节进行详细讨论。如：IoC配置元信息读取和解析，依赖查找和注入以及Bean生命周期等。
+
+
+依赖查找的今世前生
+    1、单一类型依赖查找：
+        ①、JNDI - javax.naming.Context.lookup(javax.naming.Name)
+        ②、JavaBeans - java.beans.beancontext.BeanContext
+    2、集合类型依赖查找：java.beans.beancontext.BeanContext
+    3、层次性依赖查找：java.beans.beancontext.BeanContext
